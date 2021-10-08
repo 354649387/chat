@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>在线聊天室</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="chat/css/reset.min.css">
+    <link rel="stylesheet" href="chat/css/style.css">
+</head>
+
+<body>
+<div class="wrapper">
+    <div class="container">
+        <div class="left">
+            <div class="top"> 在线人员</div>
+            <ul class="people" id="peoples">
+<!--                <li class="person" data-chat="person1">-->
+<!--                    <img src="chat/img/thomas.jpg" alt=""/>-->
+<!--                    <span class="name">张三</span>-->
+<!--                    <span class="time">10:09</span>-->
+<!--                </li>-->
+<!--                <li class="person" data-chat="person2">-->
+<!--                    <img src="chat/img/dog.png" alt=""/>-->
+<!--                    <span class="name">李四</span>-->
+<!--                    <span class="time">10:44</span>-->
+<!--                </li>-->
+<!--                <li class="person" data-chat="person3">-->
+<!--                    <img src="chat/img/louis-ck.jpeg" alt=""/>-->
+<!--                    <span class="name">王五</span>-->
+<!--                    <span class="time">10:50</span>-->
+<!--                </li>-->
+            </ul>
+        </div>
+        <div class="right">
+            <div class="top"><span><span class="name">聊天室</span></span></div>
+            <div class="chat" id="serverMsg">
+
+            </div>
+
+            <div class="write">
+
+                <input type="text" placeholder="输入内容" id="sendMsg"/>
+
+                <a class="write-link send" onclick="sends()"></a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+
+    var name = document.cookie;
+
+    name = name.split('=')[1];
+
+    document.getElementById('peoples').innerHTML = name;
+
+    var wsServer = 'ws://192.168.150.128:7777/websocket';
+    var websocket = new WebSocket(wsServer);
+
+    function sends(){
+
+        var sendMsg = document.getElementById('sendMsg').value;
+
+        websocket.send(sendMsg);
+
+        document.getElementById('sendMsg').value = '';
+
+    }
+
+    //连接上websocket服务时调用
+    websocket.onopen = function (evt) {
+
+        // console.log("Connected to WebSocket server.");
+
+        //向websocket服务器发送数据
+        // websocket.send();
+    };
+
+    websocket.onclose = function (evt) {
+        // console.log("Disconnected");
+    };
+
+    //收到服务器的消息时调用
+    websocket.onmessage = function (evt) {
+
+        // console.log('Retrieved data from server: ' + evt.data);
+
+        var serverMsg = document.getElementById('serverMsg');
+
+
+        serverMsg.innerHTML += name + "：" + evt.data +'<br>';
+
+    };
+
+    websocket.onerror = function (evt, e) {
+        // console.log('Error occured: ' + evt.data);
+    };
+
+</script>
+</html>
